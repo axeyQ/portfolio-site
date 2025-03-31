@@ -1,11 +1,31 @@
 // src/components/three/PerformanceMonitor.tsx
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
-// Fix the Stats import
-import Stats from 'three/examples/jsm/libs/stats.module.js';
+// Remove unused imports
+import type { ComponentType} from 'react';
+
+// Type for Stats - since we may not have proper types for the module
+type StatsType = {
+  dom: HTMLElement;
+  update: () => void;
+  begin: () => void;
+  end: () => void;
+};
+
+// Mock Stats if it's not available during build
+let Stats: { new(): StatsType } | null = null;
+
+// Only import Stats on client side
+if (typeof window !== 'undefined') {
+  // Use dynamic import for Stats
+  import('three/examples/jsm/libs/stats.module.js').then((module) => {
+    Stats = module.default;
+  }).catch(err => {
+    console.error('Failed to load Stats module:', err);
+  });
+}
 
 interface PerformanceMonitorProps {
   showStats?: boolean;
@@ -13,26 +33,26 @@ interface PerformanceMonitorProps {
   lowerQualityThreshold?: number; // FPS below which quality should be reduced
 }
 
-type IntersectionObserverCallback = (
-  isIntersecting: boolean,
-  entry: IntersectionObserverEntry
-) => void;
+interface SceneComponentProps {
+  quality?: 'high' | 'medium' | 'low';
+  [key: string]: any;
+}
 
 /**
- * Custom hook for using IntersectionObserver
+ * Performance monitoring component for ThreeJS scenes
  */
 const PerformanceMonitor = ({
   showStats = false,
   onPerformanceIssue,
   lowerQualityThreshold = 30,
 }: PerformanceMonitorProps) => {
-  const [stats, setStats] = useState<Stats | null>(null);
+  const [stats, setStats] = useState<StatsType | null>(null);
   const [lowPerformanceDetected, setLowPerformanceDetected] = useState(false);
   const [fpsHistory, setFpsHistory] = useState<number[]>([]);
   
   // Initialize Stats.js
   useEffect(() => {
-    if (showStats && typeof window !== 'undefined') {
+    if (showStats && typeof window !== 'undefined' && Stats) {
       const statsInstance = new Stats();
       statsInstance.dom.style.position = 'absolute';
       statsInstance.dom.style.top = '0px';
@@ -44,7 +64,7 @@ const PerformanceMonitor = ({
         document.body.removeChild(statsInstance.dom);
       };
     }
-  }, [showStats]);
+  }, [showStats, Stats]);
   
   // Monitor performance
   useFrame((state) => {
@@ -64,7 +84,7 @@ const PerformanceMonitor = ({
       
       if (avgFps < lowerQualityThreshold && !lowPerformanceDetected) {
         setLowPerformanceDetected(true);
-        onPerformanceIssue?.();
+        if (onPerformanceIssue) onPerformanceIssue();
       }
     }
   });
@@ -73,11 +93,12 @@ const PerformanceMonitor = ({
 };
 
 // Higher order component to wrap a scene with performance monitoring
-export const withPerformanceMonitoring = (
-  Component: React.ComponentType<any>,
+export const withPerformanceMonitoring = <P extends object>(
+  Component: ComponentType<P & SceneComponentProps>,
   options: PerformanceMonitorProps = {}
-) => {
-  return (props: any) => {
+): ComponentType<P> => {
+  // Add display name for better debugging
+  const WithPerformanceMonitoring = (props: P) => {
     const [quality, setQuality] = useState<'high' | 'medium' | 'low'>('high');
     
     const handlePerformanceIssue = () => {
@@ -90,7 +111,7 @@ export const withPerformanceMonitoring = (
         console.log('Performance: Reduced quality to low');
       }
       
-      options.onPerformanceIssue?.();
+      if (options.onPerformanceIssue) options.onPerformanceIssue();
     };
     
     return (
@@ -104,27 +125,37 @@ export const withPerformanceMonitoring = (
       </>
     );
   };
+  
+  // Set display name for debugging
+  WithPerformanceMonitoring.displayName = `WithPerformanceMonitoring(${Component.displayName || Component.name || 'Component'})`;
+  
+  return WithPerformanceMonitoring;
 };
 
 // Helper HOC for adaptive detail level in ThreeJS components
-export const createAdaptiveScene = (
-  HighQualityScene: React.ComponentType<any>,
-  MediumQualityScene: React.ComponentType<any>,
-  LowQualityScene: React.ComponentType<any>
-) => {
-  return withPerformanceMonitoring((props: any) => {
+export const createAdaptiveScene = <P extends object>(
+  HighQualityScene: ComponentType<P>,
+  MediumQualityScene: ComponentType<P>,
+  LowQualityScene: ComponentType<P>
+): ComponentType<P> => {
+  const AdaptiveScene = (props: P & SceneComponentProps) => {
     const { quality, ...otherProps } = props;
     
     switch (quality) {
       case 'low':
-        return <LowQualityScene {...otherProps} />;
+        return <LowQualityScene {...otherProps as P} />;
       case 'medium': 
-        return <MediumQualityScene {...otherProps} />;
+        return <MediumQualityScene {...otherProps as P} />;
       case 'high':
       default:
-        return <HighQualityScene {...otherProps} />;
+        return <HighQualityScene {...otherProps as P} />;
     }
-  });
+  };
+  
+  // Set display name for debugging
+  AdaptiveScene.displayName = 'AdaptiveScene';
+  
+  return withPerformanceMonitoring(AdaptiveScene);
 };
 
 export default PerformanceMonitor;

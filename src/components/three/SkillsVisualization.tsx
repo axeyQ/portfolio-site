@@ -1,7 +1,7 @@
 // src/components/three/SkillsVisualization.tsx
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState} from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { 
   Text, 
@@ -63,7 +63,7 @@ const SkillSphere = ({ skill, index, totalSkills }: { skill: Skill, index: numbe
   // Color based on skill group
   const color = GROUP_COLORS[skill.group];
   
-  useFrame((state) => {
+  useFrame(() => {
     if (meshRef.current) {
       // Subtle hover effect
       meshRef.current.scale.x = THREE.MathUtils.lerp(

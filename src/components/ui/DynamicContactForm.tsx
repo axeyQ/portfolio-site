@@ -241,28 +241,28 @@ const DynamicContactForm = () => {
   const secondaryButtonClasses = "px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-full transition-colors";
   
   // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-    exit: {
-      opacity: 0,
-      transition: {
-        staggerChildren: 0.1,
-        staggerDirection: -1,
-      },
-    },
-  };
+  // const containerVariants = {
+  //   hidden: { opacity: 0 },
+  //   visible: {
+  //     opacity: 1,
+  //     transition: {
+  //       staggerChildren: 0.2,
+  //     },
+  //   },
+  //   exit: {
+  //     opacity: 0,
+  //     transition: {
+  //       staggerChildren: 0.1,
+  //       staggerDirection: -1,
+  //     },
+  //   },
+  // };
   
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1 },
-    exit: { y: -20, opacity: 0 },
-  };
+  // const itemVariants = {
+  //   hidden: { y: 20, opacity: 0 },
+  //   visible: { y: 0, opacity: 1 },
+  //   exit: { y: -20, opacity: 0 },
+  // };
   
   const currentStep3D = (
     <motion.div
@@ -397,7 +397,7 @@ const DynamicContactForm = () => {
       
       <h3 className="text-2xl font-bold mb-4">Message Sent!</h3>
       <p className={`mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-        Thank you for reaching out. I'll get back to you shortly!
+        Thank you for reaching out. I&apos;ll get back to you shortly!
       </p>
       
       <motion.div

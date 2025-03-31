@@ -34,7 +34,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen flex flex-col">
       {isLoading && <Loading onComplete={handleLoadingComplete} />}
-      <CustomCursor />>
+      <CustomCursor />
       <header className="fixed w-full z-10 bg-black/20 backdrop-blur-md dark:bg-black/20 dark:backdrop-blur-md">
         <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold text-white dark:text-white">

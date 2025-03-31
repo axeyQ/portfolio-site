@@ -124,7 +124,7 @@ const HamburgerMenu = () => {
                 </motion.div>
                 
                 <ul className="space-y-6 mb-auto">
-                  {menuItems.map((item, index) => (
+                  {menuItems.map((item) => (
                     <motion.li key={item.path} variants={itemVariants}>
                       <Link
                         href={item.path}
