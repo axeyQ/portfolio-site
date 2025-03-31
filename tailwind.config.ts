@@ -7,6 +7,7 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       backgroundImage: {
@@ -59,6 +60,25 @@ const config: Config = {
         rotate: {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
+        },
+      },
+      colors: {
+        // Custom colors for both light and dark themes
+        primary: {
+          light: '#6366f1', // indigo-500
+          dark: '#818cf8',  // indigo-400
+        },
+        secondary: {
+          light: '#10b981', // emerald-500
+          dark: '#34d399',  // emerald-400
+        },
+        background: {
+          light: '#f9fafb', // gray-50
+          dark: '#111827',  // gray-900
+        },
+        surface: {
+          light: '#ffffff', // white
+          dark: '#1f2937',  // gray-800
         },
       },
     },

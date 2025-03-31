@@ -221,7 +221,7 @@ export default function Contact() {
                       </svg>
                     </div>
                     <h3 className="text-2xl font-bold mb-2">Message Sent!</h3>
-                    <p className="text-gray-300">Thank you for reaching out. I&apos;ll get back to you soon.</p>
+                    <p className="text-gray-300">Thank you for reaching out. I'll get back to you soon.</p>
                   </motion.div>
                 )}
               </motion.form>
