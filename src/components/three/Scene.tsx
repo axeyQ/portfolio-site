@@ -6,7 +6,12 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
-const Box = (props: any) => {
+interface BoxProps {
+  position?: [number, number, number];
+  color?: string;
+}
+
+const Box = (props: BoxProps) => {
   const meshRef = useRef<THREE.Mesh>(null!);
   
   // Simple animation - rotate the box

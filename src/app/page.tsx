@@ -1,14 +1,16 @@
 // src/app/page.tsx
-import Scene from '@/components/three/Scene';
+import EnhancedScene from '@/components/three/EnhancedScene';
 import Layout from '@/components/ui/Layout';
+import PageTransition from '@/components/ui/PageTransition';
 
 export default function Home() {
   return (
     <Layout>
-      <div className="relative h-screen">
+      <PageTransition>
+        <div className="relative h-screen">
         {/* ThreeJS scene as background */}
         <div className="absolute inset-0 z-0">
-          <Scene />
+          <EnhancedScene />
         </div>
         
         {/* Content overlay */}
@@ -24,6 +26,7 @@ export default function Home() {
           </button>
         </div>
       </div>
+      </PageTransition>
     </Layout>
   );
 }

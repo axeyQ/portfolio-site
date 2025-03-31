@@ -1,13 +1,31 @@
 // src/components/ui/Layout.tsx
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import CustomCursor from './CustomCursor';
+import Loading from './Loading';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // We'll only show the loading screen on the first render
+  useEffect(() => {
+    const hasVisited = sessionStorage.getItem('hasVisited');
+    if (hasVisited) {
+      setIsLoading(false);
+    } else {
+      sessionStorage.setItem('hasVisited', 'true');
+    }
+  }, []);
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+  };
+  
   return (
     <div className="min-h-screen flex flex-col">
+      {isLoading && <Loading onComplete={handleLoadingComplete} />}
       <CustomCursor />
       <header className="fixed w-full z-10 bg-black/20 backdrop-blur-md">
         <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
