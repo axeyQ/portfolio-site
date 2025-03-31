@@ -1,10 +1,11 @@
 // src/components/three/PerformanceMonitor.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import Stats from 'three/examples/jsm/libs/stats.module';
+// Fix the Stats import
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 
 interface PerformanceMonitorProps {
   showStats?: boolean;
@@ -12,6 +13,14 @@ interface PerformanceMonitorProps {
   lowerQualityThreshold?: number; // FPS below which quality should be reduced
 }
 
+type IntersectionObserverCallback = (
+  isIntersecting: boolean,
+  entry: IntersectionObserverEntry
+) => void;
+
+/**
+ * Custom hook for using IntersectionObserver
+ */
 const PerformanceMonitor = ({
   showStats = false,
   onPerformanceIssue,
@@ -23,8 +32,8 @@ const PerformanceMonitor = ({
   
   // Initialize Stats.js
   useEffect(() => {
-    if (showStats) {
-      const statsInstance = Stats();
+    if (showStats && typeof window !== 'undefined') {
+      const statsInstance = new Stats();
       statsInstance.dom.style.position = 'absolute';
       statsInstance.dom.style.top = '0px';
       statsInstance.dom.style.left = '0px';
